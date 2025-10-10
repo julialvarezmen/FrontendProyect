@@ -84,7 +84,7 @@ body {
 /* Estilos del contenido */
 .bank-icon {
     font-size: 4rem;
-    margin-bottom: 20px;
+    margin-bottom: -20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 

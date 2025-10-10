@@ -315,7 +315,7 @@ tr:hover {
 /* Back to Home Button */
 .back-to-home {
     position: fixed;
-    top: 20px;
+    top: 40px;
     left: 20px;
     background: var(--secondary);
     color: var(--text-light);

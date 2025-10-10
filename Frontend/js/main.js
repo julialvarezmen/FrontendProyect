@@ -1,8 +1,8 @@
 // Datos simulados
 let users = [
-    { id: 1, name: "Juan Pérez", email: "juan@example.com", phone: "+52 123 456 7890" },
-    { id: 2, name: "María García", email: "maria@example.com", phone: "+52 987 654 3210" },
-    { id: 3, name: "Carlos Rodríguez", email: "carlos@example.com", phone: "+52 555 123 4567" }
+    { id: 1, name: "Julian Alvarez", email: "julian@email.com", phone: "3003193386" },
+    { id: 2, name: "Luz Marina Mendoza", email: "luz@email.com", phone: "3006103055" },
+    { id: 3, name: "Carlos Rodríguez", email: "carlos@email.com", phone: "316890082" }
 ];
 
 let accounts = [
