@@ -56,6 +56,9 @@ body {
     background: rgba(0, 0, 0, 0.05);
 }
 
+.titulo-principal {
+	
+}
 .content-column {
     flex: 1;
     padding: 40px;
@@ -64,6 +67,7 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+    
 }
 
 /* Estilos para la imagen */
