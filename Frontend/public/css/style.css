@@ -97,6 +97,29 @@
   margin: 0;
   font-size: 0.95rem;
 }
+.btnlogin {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 8px 25px rgba(255, 140, 66, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+.btnlogin:hover {
+   transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(255, 140, 66, 0.6);
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%)
+}
 
 .homepage-btn {
   background: var(--orange-primary);
@@ -192,6 +215,83 @@
 .transaction-item:last-child {
   border-bottom: none;
 }
+.login-form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+.form-group {
+      margin-bottom: 1.5rem;
+    }
+.form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #2b2d42;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e9ecef;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #ff8c42;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.75rem;
+      background: #ff8c42;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #e67e22;
+    }
+
+    .alert-error {
+      background: #fff3f3;
+      border: 1px solid #ff9d9d;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      color: #d32f2f;
+      display: flex;
+      align-items: center;
+    }
+
+    .alert-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .alert-content i {
+      font-size: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .login-form {
+        padding: 1.5rem;
+        margin: 0 1rem;
+      }
+    }
 
 @media (max-width: 768px) {
   .homepage-content {
