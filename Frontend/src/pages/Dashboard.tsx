@@ -1,102 +1,148 @@
 // src/pages/Dashboard.tsx
-import React from 'react';
-import { useUsers } from '../hooks/useUsers';
-import { useAccounts } from '../hooks/useAccounts';
-import UserManagement from '../components/dashboard/UserManagement';
-import AccountManagement from '../components/dashboard/AccountManagement';
-import TransactionManagement from '../components/dashboard/TransactionManagement';
-import LoadingSpinner from '../components/ui/LoadingSpinner';
+import React, { useState } from "react";
+import { useUserDashboard } from "../hooks/useUserDashboard";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
+import ErrorMessage from "../components/ui/ErrorMessage";
+import DashboardHeader from "../components/dashboard/DashboardHeader";
+import MetricsCards from "../components/dashboard/MetricsCards";
+import UserInfoCard from "../components/dashboard/UserInfoCard";
+import AccountsCard from "../components/dashboard/AccountsCard";
+import TransactionsTable from "../components/dashboard/TransactionsTable";
+import QuickActions from "../components/dashboard/QuickActions";
+import DepositModal from "../components/dashboard/DepositModal";
+import WithdrawModal from "../components/dashboard/WithdrawModal";
+import TransferModal from "../components/dashboard/TransferModal";
+import CreateAccountModal from "../components/dashboard/CreateAccountModal";
+import AccountDetailsModal from "../components/dashboard/AccountDetailsModal";
+import { Account } from "../types";
 
 const Dashboard: React.FC = () => {
- // Reemplaza estas líneas en la parte superior del componente
-const { users, loading: loadingUsers, error: errorUsers, createUser, deleteUser } = useUsers();
-const { accounts, loading: loadingAccounts, error: errorAccounts, createAccount, deleteAccount } = useAccounts();
+  const { user, accounts, transactions, loading, error, totalBalance, refetchData } = useUserDashboard();
   
-  const totalBalance = accounts.reduce((sum, acc) => sum + acc.balance, 0);
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [showCreateAccountModal, setShowCreateAccountModal] = useState(false);
+  const [showAccountDetailsModal, setShowAccountDetailsModal] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
-  // Si alguno de los hooks está cargando, mostramos spinner
-  // (los hooks manejan su propio loading/error)
+  const handleAccountClick = (account: Account) => {
+    setSelectedAccount(account);
+    setShowAccountDetailsModal(true);
+  };
 
-  return (
-    <div className="container-fluid py-4" style={{
-      backgroundColor: '#FAFAFA',
-      minHeight: '100vh',
-      fontFamily: "'Inter', sans-serif",
-      color: '#1F2937'
-    }}>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="text-dark">OrangeBank - Dashboard</h1>
-        <button 
-          className="btn btn-outline-secondary"
-          onClick={() => {
-            localStorage.removeItem('isLoggedIn');
-            window.location.href = '/';
-          }}
-        >
-          <i className="fas fa-sign-out-alt me-1"></i>Salir
+  const handleCloseAccountDetails = () => {
+    setShowAccountDetailsModal(false);
+    setSelectedAccount(null);
+  };
+
+  const handleTransactionSuccess = () => {
+    // Reload data after successful transaction
+    refetchData();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userDni");
+    window.location.href = "/";
+  };
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (error || !user) {
+    return (
+      <div className="container mt-5">
+        <ErrorMessage message={error || "Error al cargar los datos"} />
+        <button className="btn btn-warning mt-3" onClick={handleLogout}>
+          Volver al inicio
         </button>
       </div>
+    );
+  }
 
-      {/* Métricas */}
-      <div className="row mb-4">
-        <div className="col-md-4">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body">
-              <div className="d-flex align-items-center">
-                <div className="bg-warning text-white p-3 rounded me-3">
-                  <i className="fas fa-wallet fa-2x"></i>
-                </div>
-                <div>
-                  <h6 className="text-muted mb-0">Saldo Total</h6>
-                  <h3 className="mb-0">${totalBalance.toLocaleString('es-ES', { minimumFractionDigits: 2 })}</h3>
-                </div>
-              </div>
-            </div>
-          </div>
+  return (
+    <div
+      className="container py-4"
+      style={{
+        backgroundColor: "#FAFAFA",
+        minHeight: "100vh",
+        fontFamily: "'Inter', sans-serif",
+        color: "#1F2937",
+      }}
+    >
+      <DashboardHeader user={user} onLogout={handleLogout} />
+
+      <MetricsCards 
+        totalBalance={totalBalance}
+        accountCount={accounts.length}
+        transactionCount={transactions.length}
+      />
+
+      <QuickActions 
+        onDeposit={() => setShowDepositModal(true)}
+        onWithdraw={() => setShowWithdrawModal(true)}
+        onTransfer={() => setShowTransferModal(true)}
+        onCreateAccount={() => setShowCreateAccountModal(true)}
+        hasAccounts={accounts.length > 0}
+      />
+
+      <div className="row">
+        <div className="col-md-4 mb-4">
+          <UserInfoCard user={user} />
         </div>
-        <div className="col-md-4">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body">
-              <div className="d-flex align-items-center">
-                <div className="bg-primary text-white p-3 rounded me-3">
-                  <i className="fas fa-users fa-2x"></i>
-                </div>
-                <div>
-                  <h6 className="text-muted mb-0">Usuarios</h6>
-                  <h3 className="mb-0">{users.length}</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card border-0 shadow-sm">
-            <div className="card-body">
-              <div className="d-flex align-items-center">
-                <div className="bg-info text-white p-3 rounded me-3">
-                  <i className="fas fa-credit-card fa-2x"></i>
-                </div>
-                <div>
-                  <h6 className="text-muted mb-0">Cuentas</h6>
-                  <h3 className="mb-0">{accounts.length}</h3>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="col-md-8 mb-4">
+          <AccountsCard accounts={accounts} onAccountClick={handleAccountClick} />
         </div>
       </div>
 
       <div className="row">
-        <div className="col-md-4">
-          <UserManagement />
-        </div>
-        <div className="col-md-4">
-          <AccountManagement />
-        </div>
-        <div className="col-md-4">
-          <TransactionManagement />
+        <div className="col-12">
+          <TransactionsTable transactions={transactions} accounts={accounts} />
         </div>
       </div>
+
+      {/* Modals */}
+      <DepositModal 
+        show={showDepositModal}
+        onClose={() => setShowDepositModal(false)}
+        accounts={accounts}
+        onSuccess={handleTransactionSuccess}
+      />
+      
+      <WithdrawModal 
+        show={showWithdrawModal}
+        onClose={() => setShowWithdrawModal(false)}
+        accounts={accounts}
+        onSuccess={handleTransactionSuccess}
+      />
+      
+      <TransferModal 
+        show={showTransferModal}
+        onClose={() => setShowTransferModal(false)}
+        accounts={accounts}
+        onSuccess={handleTransactionSuccess}
+      />
+      
+      <CreateAccountModal 
+        show={showCreateAccountModal}
+        onClose={() => setShowCreateAccountModal(false)}
+        userId={user.id}
+        onSuccess={handleTransactionSuccess}
+      />
+      
+      <AccountDetailsModal 
+        show={showAccountDetailsModal}
+        onClose={handleCloseAccountDetails}
+        account={selectedAccount}
+        transactions={transactions}
+      />
     </div>
   );
 };
