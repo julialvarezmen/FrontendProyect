@@ -98,5 +98,5 @@ Crea un archivo .env en la raíz del proyecto con:
 VITE_API_URL=http://localhost:8080
 
 ### DESARROLLADORES 
-Karoll Escalante
-Julian Alvarez 
+- Karoll Escalante
+- Julian Alvarez 
