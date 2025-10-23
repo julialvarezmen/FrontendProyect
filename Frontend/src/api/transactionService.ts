@@ -10,6 +10,9 @@ export const transactionService = {
   getById: (id: number): Promise<Transaction> => 
     apiClient.get<Transaction>(`${TRANSACTION_API_URL}/${id}`).then(res => res.data),
   
+  getByAccountId: (accountId: number): Promise<Transaction[]> => 
+    apiClient.get<Transaction[]>(`${TRANSACTION_API_URL}/account/${accountId}`).then(res => res.data),
+  
   createTransaction: (accountId: number, transactionData: TransactionRequestDTO): Promise<Transaction> => 
     apiClient.post<Transaction>(`${TRANSACTION_API_URL}/accounts/${accountId}`, transactionData)
       .then(res => res.data),

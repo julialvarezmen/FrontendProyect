@@ -9,6 +9,9 @@ export const accountService = {
   getById: (id: number): Promise<Account> => 
     apiClient.get<Account>(`${ACCOUNT_API_URL}/${id}`).then(res => res.data),
   
+  getByUserId: (userId: number): Promise<Account[]> => 
+    apiClient.get<Account[]>(`${ACCOUNT_API_URL}/user/${userId}`).then(res => res.data),
+  
   create: (accountData: AccountRequestDTO): Promise<Account> => 
     apiClient.post<Account>(ACCOUNT_API_URL, accountData).then(res => res.data),
   

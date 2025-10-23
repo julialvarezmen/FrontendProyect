@@ -141,7 +141,12 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="text-center mt-5">
+        <div className="text-center mt-5" style={{
+          display: 'flex',
+          gap: '1rem',
+          justifyContent: 'center',
+          flexWrap: 'wrap'
+        }}>
           <Link 
             to="/login" 
             className="btn btn-warning btn-lg homepage-btn"
@@ -151,8 +156,25 @@ const HomePage: React.FC = () => {
               fontWeight: '600'
             }}
           >
-            👤 ¡Bienvenido Administrador!
+            👤 Iniciar Sesión
           </Link>
+          <Link 
+            to="/register" 
+            className="btn btn-primary btn-lg homepage-btn"
+            style={{
+              padding: '0.75rem 2rem',
+              fontSize: '1.1rem',
+              fontWeight: '600'
+            }}
+          >
+            📝 Registrarse
+          </Link>
+        </div>
+
+        <div className="text-center mt-3">
+          <small className="text-muted">
+            Únete a nuestro sistema bancario seguro y confiable
+          </small>
         </div>
       </div>
     </div>
