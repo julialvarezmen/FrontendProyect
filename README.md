@@ -1,4 +1,4 @@
- """# 🏦 OrangeBank – Gestor Bancario
+## 🏦 OrangeBank – Gestor Bancario
 
 **OrangeBank** es una aplicación web desarrollada con **React + TypeScript + Vite** que permite gestionar usuarios, cuentas y transacciones bancarias de forma sencilla y eficiente.  
 El sistema fue diseñado para simular las operaciones básicas de un banco digital, con una interfaz moderna y responsive.
