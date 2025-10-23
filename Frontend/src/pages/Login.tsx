@@ -1,24 +1,63 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import ErrorMessage from '../components/ui/ErrorMessage';
+import { authService } from '../api/authService';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [dni, setDni] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!username.trim() || !password.trim()) {
+    if (!dni.trim() || !password.trim()) {
       setError('Por favor, completa ambos campos');
       return;
     }
     
-    // Simular login (sin conexión a API)
-    localStorage.setItem('isLoggedIn', 'true');
-    navigate('/dashboard');
+    setLoading(true);
+    setError('');
+    
+    try {
+      console.log('Attempting login with DNI:', dni);
+      const response = await authService.login({ dni, password });
+      console.log('Login successful:', response);
+      
+      // Guardar información de sesión
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userId', response.userId.toString());
+      localStorage.setItem('userDni', dni);
+      
+      console.log('Navigating to dashboard...');
+      // Force reload to ensure App component picks up the localStorage change
+      window.location.href = '/dashboard';
+    } catch (err: any) {
+      console.error('Login error:', err);
+      console.error('Error response:', err.response);
+      console.error('Error data:', err.response?.data);
+      
+      // Set error message
+      let errorMessage = 'Error al iniciar sesión. Verifica tus credenciales.';
+      
+      if (err.response?.data) {
+        if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        } else if (err.response.data.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.response.data.error) {
+          errorMessage = err.response.data.error;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -57,7 +96,7 @@ const Login: React.FC = () => {
             Gestor Bancario
           </h2>
           <p className="login-subtitle" style={{ color: '#4A4E69', marginBottom: '2rem' }}>
-            Inicia sesión para acceder a tu cuenta
+            Inicia sesión con tu DNI y contraseña
           </p>
         </div>
 
@@ -65,14 +104,16 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="username" className="form-label">Usuario</label>
+            <label htmlFor="dni" className="form-label">DNI</label>
             <input
               type="text"
               className="form-control"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="dni"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              placeholder="Ingresa tu DNI"
               required
+              disabled={loading}
             />
           </div>
           <div className="mb-4">
@@ -83,13 +124,32 @@ const Login: React.FC = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="Ingresa tu contraseña"
               required
+              disabled={loading}
             />
           </div>
-          <button type="submit" className="btn btn-warning w-100 py-2">
-            🔐 Iniciar Sesión
+          <button 
+            type="submit" 
+            className="btn btn-warning w-100 py-2"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Iniciando sesión...
+              </>
+            ) : (
+              <>🔐 Iniciar Sesión</>
+            )}
           </button>
         </form>
+
+        <div className="text-center mt-3">
+          <small className="text-muted">
+            ¿No tienes cuenta? <Link to="/register" className="text-warning">Regístrate aquí</Link>
+          </small>
+        </div>
       </div>
     </div>
   );
