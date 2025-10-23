@@ -84,9 +84,19 @@ Frontend/
 ## ⚙️ Instalación y ejecución
 
 ### 1️⃣ Clonar el repositorio
+    https://github.com/julialvarezmen/FrontendProyect
+
 ### 2️⃣ Instalar dependencias
      npm install
 
 ### 3️⃣ Ejecutar en modo desarrollo
      npm run dev
+     
+### 🔌 Variables de entorno
+Crea un archivo .env en la raíz del proyecto con:
 
+VITE_API_URL=http://localhost:8080
+
+### DESARROLLADORES 
+Karoll Escalante
+Julian Alvarez 
