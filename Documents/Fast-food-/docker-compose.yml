@@ -1,0 +1,71 @@
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: salchipapas-db
+    environment:
+      POSTGRES_USER: salchipapas_user
+      POSTGRES_PASSWORD: salchipapas_pass
+      POSTGRES_DB: salchipapas_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - salchipapas-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U salchipapas_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: salchipapas-backend
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://salchipapas_user:salchipapas_pass@postgres:5432/salchipapas_db
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      PORT: 5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - salchipapas-network
+    command: npm run dev
+
+  # Frontend React
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: salchipapas-frontend
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - salchipapas-network
+    command: npm run dev
+
+volumes:
+  postgres_data:
+
+networks:
+  salchipapas-network:
+    driver: bridge
+
+
